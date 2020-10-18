@@ -583,11 +583,39 @@ namespace compute.geometry
             {
                 InputNames.Add(i.Key);
 
-                Inputs.Add(new IoParamSchema
+                var param = new IoParamSchema
                 {
                     Name = i.Key,
                     ParamType = i.Value.Param.TypeName
-                });
+                };
+
+                switch (i.Value.Param)
+                {
+                    case GH_NumberSlider p:
+                        param.ParamType = "Slider";
+                        param.Range = new IoParamSchemaRange
+                        {
+                            Max = (double)p.Slider.Maximum,
+                            Min = (double)p.Slider.Minimum,
+                            Value = (double)p.Slider.Value
+                        };
+                        break;
+                    case Param_Number p:
+                        double number_value = p.PersistentDataCount == 1 ? p.PersistentData.FirstOrDefault().Value : default;
+                        param.Number = new IoParamSchemaValue<double>(number_value);
+                        break;
+                    case Param_Integer p:
+                        int integer_value = p.PersistentDataCount == 1 ? p.PersistentData.FirstOrDefault().Value : default;
+                        param.Integer = new IoParamSchemaValue<int>(integer_value);
+                        break;
+                    case Param_Boolean p:
+                        bool boolean_value = p.PersistentDataCount == 1 ? p.PersistentData.FirstOrDefault().Value : default;
+                        param.Boolean = new IoParamSchemaValue<bool>(boolean_value);
+                        break;
+                    default:
+                        break;
+                }
+                Inputs.Add(param);
             }
 
             foreach (var o in _output)

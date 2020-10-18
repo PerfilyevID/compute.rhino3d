@@ -29,7 +29,30 @@ namespace Resthopper.IO
     {
         public string Name { get; set; }
         public string ParamType { get; set; }
+        
+        public IoParamSchemaRange Range { get; set; }
+        public IoParamSchemaValue<bool> Boolean { get; set; }
+        public IoParamSchemaValue<int> Integer { get; set; }
+        public IoParamSchemaValue<double> Number { get; set; }
     }
+
+    public class IoParamSchemaRange
+    {
+        public double Max { get; set; }
+        public double Min { get; set; }
+        public double Value { get; set; }
+    }
+
+    public class IoParamSchemaValue<T>
+    {
+        public IoParamSchemaValue(T value)
+        {
+            Value = value;
+        }
+
+        public T Value { get; set; }
+    }
+
 
     public class IoResponseSchema
     {
